@@ -5,10 +5,11 @@ const { verifyToken } = require('../middlewares/authMiddleware'); // Correct imp
 const router = express.Router();
 
 /**
- * @openapi
+ * @swagger
  * /api/register:
  *   post:
  *     summary: Register a new user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -33,10 +34,11 @@ const router = express.Router();
 router.post('/register', registerUser);
 
 /**
- * @openapi
+ * @swagger
  * /api/login:
  *   post:
- *     summary: Login a user and get a JWT token
+ *     summary: Authenticate a user and return a JWT
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -53,20 +55,34 @@ router.post('/register', registerUser);
  *               - password
  *     responses:
  *       200:
- *         description: JWT token returned
+ *         description: User authenticated successfully
  */
 router.post('/login', loginUser);
 
 /**
- * @openapi
+ * @swagger
  * /api/user:
  *   get:
- *     summary: Get user details
+ *     summary: Retrieve user details
+ *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
  */
 router.get('/user', verifyToken, getUserDetails); // Correct usage of middleware
 

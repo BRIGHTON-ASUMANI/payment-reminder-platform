@@ -6,10 +6,24 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'User API',
+      title: 'User and Call Management API',
       version: '1.0.0',
-      description: 'API for User Registration, Login, and JWT Authentication',
+      description: 'API for User Registration, Login, Call Initiation, and JWT Authentication',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   apis: ['./src/routes/*.js'], // Path to the API docs
 };
