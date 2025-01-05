@@ -1,6 +1,6 @@
 const express = require('express');
 const { registerUser, loginUser, getUserDetails } = require('../controllers/userController');
-const verifyToken = require('../middlewares/authMiddleware');
+const { verifyToken } = require('../middlewares/authMiddleware'); // Correct import
 
 const router = express.Router();
 
@@ -68,6 +68,6 @@ router.post('/login', loginUser);
  *       200:
  *         description: User details retrieved successfully
  */
-router.get('/user', verifyToken, getUserDetails);
+router.get('/user', verifyToken, getUserDetails); // Correct usage of middleware
 
 module.exports = router;

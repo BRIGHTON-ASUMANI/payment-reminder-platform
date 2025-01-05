@@ -1,5 +1,6 @@
 const express = require('express');
 const { sendCall, getCallLogs } = require('../controllers/callController');
+const { verifyToken } = require('../middlewares/authMiddleware'); // Correct import
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ const router = express.Router();
  *       200:
  *         description: Call initiated and logged successfully
  */
-router.post('/call', sendCall);
+router.post('/call', verifyToken, sendCall); // Apply the verifyToken middleware
 
 /**
  * @openapi
@@ -47,6 +48,6 @@ router.post('/call', sendCall);
  *       200:
  *         description: Call logs retrieved successfully
  */
-router.get('/call/logs', getCallLogs);
+router.get('/call/logs', verifyToken, getCallLogs); // Apply the verifyToken middleware
 
 module.exports = router;
