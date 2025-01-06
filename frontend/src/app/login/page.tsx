@@ -47,15 +47,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-gray-900">
-      {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div> */}
-
-      <Card className="relative w-full max-w-md bg-gray-800 shadow-xl border border-gray-700">
+    <div className="relative flex justify-center items-center min-h-screen bg-gray-50">
+      <Card className="relative w-full max-w-md bg-white shadow-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-100">
+          <CardTitle className="text-2xl font-bold text-gray-900">
             {isSignup ? "Create an Account" : "Login to Your Account"}
           </CardTitle>
-          <CardDescription className="text-gray-400">
+          <CardDescription className="text-gray-500">
             {isSignup
               ? "Sign up to get started"
               : "Enter your email and password to access your account"}
@@ -64,7 +62,7 @@ export default function LoginPage() {
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-2">
-              <Label htmlFor="email" className="text-gray-100">
+              <Label htmlFor="email" className="text-gray-700">
                 Email
               </Label>
               <Input
@@ -75,11 +73,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-700 text-gray-100 border-gray-600 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
               />
             </div>
             <div className="grid w-full items-center gap-2">
-              <Label htmlFor="password" className="text-gray-100">
+              <Label htmlFor="password" className="text-gray-700">
                 Password
               </Label>
               <div className="relative">
@@ -91,11 +89,11 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-700 text-gray-100 border-gray-600 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                  className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 text-gray-400"
+                  className="absolute inset-y-0 right-3 text-gray-500 hover:text-gray-700"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -104,7 +102,7 @@ export default function LoginPage() {
             </div>
             {isSignup && (
               <div className="grid w-full items-center gap-2">
-                <Label htmlFor="confirmPassword" className="text-gray-100">
+                <Label htmlFor="confirmPassword" className="text-gray-700">
                   Confirm Password
                 </Label>
                 <Input
@@ -115,7 +113,7 @@ export default function LoginPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-gray-700 text-gray-100 border-gray-600 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                  className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
                 />
               </div>
             )}
@@ -124,8 +122,8 @@ export default function LoginPage() {
               disabled={isLoading}
               className={`w-full ${
                 isSignup
-                  ? "bg-gray-600 hover:bg-gray-500"
-                  : "bg-gray-800 hover:bg-gray-700"
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-blue-600 hover:bg-blue-700"
               } text-white transition-colors duration-200`}
             >
               {isLoading ? "Loading..." : isSignup ? "Sign up" : "Log in"}
@@ -135,7 +133,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setIsSignup((prev) => !prev)}
-              className="text-gray-400 underline hover:text-gray-200 transition-colors"
+              className="text-gray-600 underline hover:text-gray-800 transition-colors"
             >
               {isSignup
                 ? "Already have an account? Log in"
