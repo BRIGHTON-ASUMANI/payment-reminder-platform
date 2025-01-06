@@ -1,5 +1,9 @@
 # voice-reminder-system
 [![Jest](https://img.shields.io/badge/tested%20with-jest-9749ff)](https://jestjs.io/)
+![Screenshot from 2025-01-06 21-31-01](https://github.com/user-attachments/assets/591da81c-140f-4bd1-b207-886d780b7eef)
+![Screenshot from 2025-01-06 21-30-38](https://github.com/user-attachments/assets/e220e917-1d25-4e08-85da-deecb00203f1)
+![Screenshot from 2025-01-06 21-30-08](https://github.com/user-attachments/assets/2db86742-bf3c-4b35-b368-a8220b33b907)
+![Screenshot from 2025-01-06 21-33-40](https://github.com/user-attachments/assets/d96ed067-3a69-46e2-a0b5-9cbae9bce9eb)
 
 
 This repository contains a full-stack application with separate frontend and backend directories. The frontend is built with Next.js, while the backend uses Node.js with Prisma ORM and PostgreSQL database. Authentication is implemented using JSON Web Tokens (JWT).
