@@ -1,35 +1,19 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 
-import { Suspense, useState, useEffect } from 'react'
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle,
-  CardDescription 
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { 
-  Bell, 
-  Search,
-  UserPlus,
-  User,
-  Phone,
-  DollarSign,
-  Calendar,
-  Activity,
-  Plus,
-} from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from '@/components/ui/input'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import axios from 'axios'
-import Sidebar from '@/components/Sidebar'
-import StatsGrid from '@/components/Infosnacks'
-import UserGreetingFallback from '@/components/UserGreetingFallback'
-import LogoutButton from '@/components/LogoutButton'
-import PrivateRoute from '@/components/PrivateRoute'
+import { Suspense, useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Bell, Search, UserPlus, User, Phone, DollarSign, Calendar, Activity, Plus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from '@/components/ui/input';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import axios from 'axios';
+import Sidebar from '@/components/Sidebar';
+import StatsGrid from '@/components/Infosnacks';
+import UserGreetingFallback from '@/components/UserGreetingFallback';
+import LogoutButton from '@/components/LogoutButton';
+import { formatDistanceToNow, parseISO } from 'date-fns';  
 
 interface CallLog {
   id: string;
@@ -52,7 +36,7 @@ function UserGreeting() {
   });
 
   const getAuthToken = () => {
-    return localStorage.getItem('authToken') || ''; 
+    return localStorage.getItem('authToken') || '';
   };
 
   useEffect(() => {
@@ -68,8 +52,8 @@ function UserGreeting() {
       } catch (error) {
         console.error("Failed to fetch call logs:", error);
       }
-    };    
-    
+    };
+
     fetchCallLogs();
   }, []);
 
@@ -81,24 +65,30 @@ function UserGreeting() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       const response = await axios.get('/call/logs', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setCallLogs(response.data);
-  
+
       setNewCall({ customerName: '', phoneNumber: '', paymentAmount: 0, dueDate: '', language: '' });
     } catch (error) {
       console.error("Failed to add call:", error);
     }
   };
 
+  // Format date to a human-readable format
+  const formatDate = (dateString: string) => {
+    const date = parseISO(dateString);  // Parse the ISO date string
+    return formatDistanceToNow(date, { addSuffix: true });  // Format the date to be relative to the current time
+  };
+
   return (
     <div className="flex h-screen">
       <Sidebar />
-      
+
       <div className="flex-1 bg-gradient-to-br from-blue-950 via-blue-900 to-blue-950">
         <div className="h-16 border-b border-amber-200/10 flex items-center justify-between px-8">
           <div className="flex items-center space-x-4">
@@ -120,7 +110,7 @@ function UserGreeting() {
             <p className="text-amber-200/60 mt-1">Here's what's happening with your calls.</p>
           </div>
 
-          <StatsGrid stats={['Total calls', 'More data', 'More data', 'More data']} />
+          <StatsGrid stats={['Total calls', 'More data', 'More data', 'More data']} callsLength={callLogs.length} />
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -190,7 +180,7 @@ function UserGreeting() {
               </div>
 
               <div className="mt-4 flex justify-end space-x-4">
-                <AlertDialogCancel className="text-amber-200/60 hover:bg-blue-800">Cancel</AlertDialogCancel>
+                <AlertDialogCancel className="bg-blue-950/50 border-amber-200/20 text-amber-100">Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleAddCall} className="bg-blue-800 text-amber-100 hover:bg-blue-700">
                   Add Call
                 </AlertDialogAction>
@@ -208,6 +198,9 @@ function UserGreeting() {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-amber-200/10">
+                      <TableHead className="text-amber-100">
+                        #
+                      </TableHead>
                       <TableHead className="text-amber-100">
                         <User className="inline mr-2 h-4 w-4" />
                         Customer Name
@@ -232,12 +225,13 @@ function UserGreeting() {
                   </TableHeader>
                   <TableBody>
                     {callLogs.length > 0 ? (
-                      callLogs.map((log) => (
+                      callLogs.map((log, index) => (
                         <TableRow key={log.id} className="border-amber-200/10">
+                          <TableCell className="text-amber-100">{index + 1}</TableCell>
                           <TableCell className="text-amber-100">{log.customerName}</TableCell>
                           <TableCell className="text-amber-100">{log.phoneNumber}</TableCell>
                           <TableCell className="text-amber-100">{log.paymentAmount}</TableCell>
-                          <TableCell className="text-amber-100">{log.dueDate}</TableCell>
+                          <TableCell className="text-amber-100">{formatDate(log.dueDate)}</TableCell> {/* Displaying formatted date */}
                           <TableCell className="text-amber-100">{log.status}</TableCell>
                         </TableRow>
                       ))
@@ -261,10 +255,8 @@ function UserGreeting() {
 
 export default function Home() {
   return (
-    <PrivateRoute>
-      <Suspense fallback={<UserGreetingFallback />}>
-        <UserGreeting />
-      </Suspense>
-    </PrivateRoute>
+    <Suspense fallback={<UserGreetingFallback />}>
+      <UserGreeting />
+    </Suspense>
   );
 }

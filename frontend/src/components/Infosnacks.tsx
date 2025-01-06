@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent } from "@/components/ui/card";
 
 interface StatsCardProps {
@@ -17,13 +18,21 @@ const StatsCard = ({ title, value }: StatsCardProps) => (
 
 interface StatsGridProps {
   stats: string[];
+  callsLength: number;
 }
 
-const StatsGrid = ({ stats }: StatsGridProps) => (
+const StatsGrid = ({ stats, callsLength }: StatsGridProps) => (
   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    {stats.map((title, i) => (
-      <StatsCard key={i} title={title} value={Math.floor(Math.random() * 100)} />
-    ))}
+    {stats.map((title, i) => {
+      let value: number;
+      if (title === "Total calls") {
+        value = callsLength;
+      } else {
+        value = Math.floor(Math.random() * 100);
+      }
+      
+      return <StatsCard key={i} title={title} value={value} />;
+    })}
   </div>
 );
 

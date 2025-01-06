@@ -6,8 +6,10 @@ const twilioService = require('../services/twilioService');
 const sendCall = async (req, res) => {
   const { customerName, phoneNumber, paymentAmount, dueDate, language } = req.body;
 
+  console.log('Received data:', req.body); // Add this to check if fields are present
+
   try {
-    // Send the call using Twilio
+    // Send the call using Twilio (this line is commented out)
     // const callSid = await twilioService.sendCall(customerName, phoneNumber, paymentAmount, dueDate, language);
 
     // Log the call to the database
@@ -16,17 +18,19 @@ const sendCall = async (req, res) => {
         customerName,
         phoneNumber,
         paymentAmount,
-        dueDate: new Date(dueDate),
+        dueDate: new Date(dueDate), 
         language,
-        status: 'Initiated', 
+        status: 'Initiated',
       },
     });
 
-    res.status(200).json({ message: 'Call initiated successfully', callSid, callLog });
+    res.status(200).json({ message: 'Call initiated successfully'});
   } catch (error) {
+    console.error('Error creating call:', error); 
     res.status(500).json({ error: 'Failed to initiate call' });
   }
 };
+
 
 // Function to get all call logs
 const getCallLogs = async (req, res) => {
