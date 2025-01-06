@@ -61,7 +61,7 @@ export default function LoginPage() {
       <Card className="relative w-full max-w-md bg-white/10 backdrop-blur-md shadow-xl border border-amber-200/20">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-amber-100">
-            Voice Reminder
+            Demo App
           </CardTitle>
           <CardDescription className="text-amber-100/80">
             {isSignup ? "Sign up to get started" : "Enter your email and password to access your account"}
