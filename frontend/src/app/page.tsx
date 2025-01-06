@@ -43,7 +43,7 @@ const Home: React.FC = () => {
     const fetchCallLogs = async () => {
       try {
         const token = getAuthToken();  // Get the token from localStorage
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/call`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/call/logs`, {
           headers: {
             Authorization: `Bearer ${token}`,  // Use token in Authorization header
           },
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
       });
   
       // Fetch updated call logs after adding a new one
-      const response = await axios.get('/calls', {
+      const response = await axios.get('/call/logs', {
         headers: {
           Authorization: `Bearer ${token}`,  // Use token in Authorization header
         },
@@ -93,7 +93,7 @@ const Home: React.FC = () => {
           </Button>
         </div>
       <div className="max-w-[80%] mx-auto p-6">
-        <h1 className="text-3xl font-semibold text-center text-black">Welcome to your Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-center text-black">Welcome Back</h1>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>

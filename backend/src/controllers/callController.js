@@ -8,7 +8,7 @@ const sendCall = async (req, res) => {
 
   try {
     // Send the call using Twilio
-    const callSid = await twilioService.sendCall(customerName, phoneNumber, paymentAmount, dueDate, language);
+    // const callSid = await twilioService.sendCall(customerName, phoneNumber, paymentAmount, dueDate, language);
 
     // Log the call to the database
     const callLog = await prisma.calls.create({
@@ -18,7 +18,7 @@ const sendCall = async (req, res) => {
         paymentAmount,
         dueDate: new Date(dueDate),
         language,
-        status: 'Initiated', // Set status to initiated when call is made
+        status: 'Initiated', 
       },
     });
 
@@ -30,12 +30,15 @@ const sendCall = async (req, res) => {
 
 // Function to get all call logs
 const getCallLogs = async (req, res) => {
+  console.log('Authorization header:', req.headers['authorization']);
   try {
     const callLogs = await prisma.calls.findMany();
     res.status(200).json(callLogs);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch call logs' });
   }
 };
+
 
 module.exports = { sendCall, getCallLogs };
