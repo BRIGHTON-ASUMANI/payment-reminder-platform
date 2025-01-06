@@ -36,6 +36,12 @@ async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
 
+    // Check if JWT_SECRET is configured
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not set in environment variables');
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+
     // Find the user
     const user = await prisma.user.findUnique({
       where: { email },
@@ -50,10 +56,16 @@ async function loginUser(req, res) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ email: user.email }, 'secret');
+    // Generate JWT token using environment variable
+    const token = jwt.sign(
+      { email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' } 
+    );
+
     res.status(200).json({ token });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

@@ -10,8 +10,6 @@ const router = express.Router();
  *   post:
  *     summary: Initiate a call and log it
  *     tags: [Calls]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -48,12 +46,10 @@ const router = express.Router();
  *                   type: string
  *                 callSid:
  *                   type: string
- *       401:
- *         description: Unauthorized
  *       500:
  *         description: Server error
  */
-router.post('/call', verifyToken, sendCall); // Apply the verifyToken middleware
+router.post('/call', sendCall); // Removed verifyToken middleware for no token validation
 
 /**
  * @swagger
@@ -61,8 +57,6 @@ router.post('/call', verifyToken, sendCall); // Apply the verifyToken middleware
  *   get:
  *     summary: Retrieve all call logs
  *     tags: [Calls]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of call logs retrieved successfully
@@ -87,11 +81,9 @@ router.post('/call', verifyToken, sendCall); // Apply the verifyToken middleware
  *                   createdAt:
  *                     type: string
  *                     format: date-time
- *       401:
- *         description: Unauthorized
  *       500:
  *         description: Server error
  */
-router.get('/call/logs', verifyToken, getCallLogs); // Apply the verifyToken middleware
+router.get('/call/logs', getCallLogs); // Removed verifyToken middleware for no token validation
 
 module.exports = router;
