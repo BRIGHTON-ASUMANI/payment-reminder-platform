@@ -48,7 +48,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-gray-900">
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div>
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div> */}
 
       <Card className="relative w-full max-w-md bg-gray-800 shadow-xl border border-gray-700">
         <CardHeader>

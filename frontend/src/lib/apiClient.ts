@@ -12,6 +12,8 @@ apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');  // Token stored in localStorage
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`;
+  } else {
+    console.error('Token not found');
   }
   return config;
 });

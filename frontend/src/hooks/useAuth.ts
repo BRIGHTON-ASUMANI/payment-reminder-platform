@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../lib/apiClient';
+import { jwtDecode } from 'jwt-decode';
 
 export const useAuth = () => {
   const [user, setUser] = useState<unknown>(null);
@@ -8,26 +9,23 @@ export const useAuth = () => {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      apiClient
-        .get('/user') // This endpoint returns the user details
-        .then((response) => {
-          setUser(response.data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setUser(null);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+      try {
+        const decodedToken = jwtDecode(token); // Decode the token
+        setUser(decodedToken); 
+      } catch (error) {
+        console.error('Invalid token:', error);
+        setUser(null); // If token decoding fails, set user as null
+      }
     }
+    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
       const response = await apiClient.post('/login', { email, password });
       localStorage.setItem('authToken', response.data.token); // Save token in localStorage
-      setUser(response.data.user); // Set user data
+      const decodedToken = jwtDecode(response.data.token); // Decode token and get user data
+      setUser(decodedToken); // Set user data from decoded token
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -35,10 +33,10 @@ export const useAuth = () => {
 
   const signup = async (email: string, password: string) => {
     try {
-      // Only send `email` and `password` during signup
-      const response = await apiClient.post('/signup', { email, password });
+      const response = await apiClient.post('/register', { email, password });
       localStorage.setItem('authToken', response.data.token); // Save token in localStorage
-      setUser(response.data.user); // Set user data
+      const decodedToken = jwtDecode(response.data.token); // Decode token and get user data
+      setUser(decodedToken); // Set user data from decoded token
     } catch (error) {
       console.error('Signup error:', error);
     }
