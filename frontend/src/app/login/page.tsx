@@ -47,22 +47,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-gray-50">
-      <Card className="relative w-full max-w-md bg-white shadow-md">
+    <div className="relative flex justify-center items-center min-h-screen bg-neutral-50">
+      {/* Background Image with Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/home.webp')",
+          filter: "brightness(0.65) blur(2px)",
+        }}
+      ></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-950/80 via-blue-900/70 to-blue-950/80"></div>
+
+      <Card className="relative w-full max-w-md bg-white/10 backdrop-blur-md shadow-xl border border-amber-200/20">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            {isSignup ? "Create an Account" : "Login to Your Account"}
+          <CardTitle className="text-2xl font-bold text-amber-100">
+            Voice Reminder
           </CardTitle>
-          <CardDescription className="text-gray-500">
-            {isSignup
-              ? "Sign up to get started"
-              : "Enter your email and password to access your account"}
+          <CardDescription className="text-amber-100/80">
+            {isSignup ? "Sign up to get started" : "Enter your email and password to access your account"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-2">
-              <Label htmlFor="email" className="text-gray-700">
+              <Label htmlFor="email" className="text-amber-100/90">
                 Email
               </Label>
               <Input
@@ -73,11 +81,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
+                className="bg-blue-950/50 text-amber-50 border-amber-200/20 focus:ring-amber-400 focus:border-amber-400 placeholder-amber-200/50"
               />
             </div>
             <div className="grid w-full items-center gap-2">
-              <Label htmlFor="password" className="text-gray-700">
+              <Label htmlFor="password" className="text-amber-100/90">
                 Password
               </Label>
               <div className="relative">
@@ -89,11 +97,11 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
+                  className="bg-blue-950/50 text-amber-50 border-amber-200/20 focus:ring-amber-400 focus:border-amber-400 placeholder-amber-200/50"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 text-gray-500 hover:text-gray-700"
+                  className="absolute inset-y-0 right-3 text-amber-100/80 hover:text-amber-100"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -102,7 +110,7 @@ export default function LoginPage() {
             </div>
             {isSignup && (
               <div className="grid w-full items-center gap-2">
-                <Label htmlFor="confirmPassword" className="text-gray-700">
+                <Label htmlFor="confirmPassword" className="text-amber-100/90">
                   Confirm Password
                 </Label>
                 <Input
@@ -113,33 +121,54 @@ export default function LoginPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-white text-gray-900 border-gray-200 focus:ring-gray-200 focus:border-gray-300 placeholder-gray-400"
+                  className="bg-blue-950/50 text-amber-50 border-amber-200/20 focus:ring-amber-400 focus:border-amber-400 placeholder-amber-200/50"
                 />
               </div>
             )}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full ${
-                isSignup
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-600 hover:bg-blue-700"
-              } text-white transition-colors duration-200`}
-            >
-              {isLoading ? "Loading..." : isSignup ? "Sign up" : "Log in"}
-            </Button>
+            <div className="flex space-x-4">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full ${
+                  isSignup ? "bg-blue-800 hover:bg-blue-900" : "bg-amber-600 hover:bg-amber-700"
+                } text-white transition-colors duration-200`}
+                onClick={() => setIsSignup(false)}
+              >
+                {isLoading ? (
+                  <span className="flex justify-center items-center">
+                    <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v16a8 8 0 01-8-8z"></path>
+                    </svg>
+                    Loading...
+                  </span>
+                ) : (
+                  "Log in"
+                )}
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                variant="secondary"
+                className={`w-full ${
+                  isSignup ? "bg-amber-600 hover:bg-amber-700" : "bg-blue-800 hover:bg-blue-900"
+                } text-white transition-colors duration-200`}
+                onClick={() => setIsSignup(true)}
+              >
+                {isLoading ? (
+                  <span className="flex justify-center items-center">
+                    <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v16a8 8 0 01-8-8z"></path>
+                    </svg>
+                    Loading...
+                  </span>
+                ) : (
+                  "Sign up"
+                )}
+              </Button>
+            </div>
           </form>
-          <div className="text-center mt-4">
-            <button
-              type="button"
-              onClick={() => setIsSignup((prev) => !prev)}
-              className="text-gray-600 underline hover:text-gray-800 transition-colors"
-            >
-              {isSignup
-                ? "Already have an account? Log in"
-                : "Don't have an account? Sign up"}
-            </button>
-          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from 'react';
-import apiClient from '../lib/apiClient';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 export const useAuth = () => {
@@ -10,11 +12,11 @@ export const useAuth = () => {
     const token = localStorage.getItem('authToken');
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // Decode the token
-        setUser(decodedToken); 
+        const decodedToken = jwtDecode(token);
+        setUser(decodedToken);
       } catch (error) {
         console.error('Invalid token:', error);
-        setUser(null); // If token decoding fails, set user as null
+        setUser(null);
       }
     }
     setLoading(false);
@@ -22,10 +24,10 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiClient.post('/login', { email, password });
-      localStorage.setItem('authToken', response.data.token); // Save token in localStorage
-      const decodedToken = jwtDecode(response.data.token); // Decode token and get user data
-      setUser(decodedToken); // Set user data from decoded token
+      const response = await axios.post('/api/login', { email, password });
+      localStorage.setItem('authToken', response.data.token);
+      const decodedToken = jwtDecode(response.data.token);
+      setUser(decodedToken);
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -33,10 +35,10 @@ export const useAuth = () => {
 
   const signup = async (email: string, password: string) => {
     try {
-      const response = await apiClient.post('/register', { email, password });
-      localStorage.setItem('authToken', response.data.token); // Save token in localStorage
-      const decodedToken = jwtDecode(response.data.token); // Decode token and get user data
-      setUser(decodedToken); // Set user data from decoded token
+      const response = await axios.post('/api/register', { email, password });
+      localStorage.setItem('authToken', response.data.token);
+      const decodedToken = jwtDecode(response.data.token);
+      setUser(decodedToken);
     } catch (error) {
       console.error('Signup error:', error);
     }
