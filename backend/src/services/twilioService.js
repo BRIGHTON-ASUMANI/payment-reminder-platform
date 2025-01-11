@@ -1,49 +1,80 @@
-// src/services/twilioService.js
 const twilio = require('twilio');
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
-const prisma = require('@prisma/client');
+const VoiceResponse = require('twilio').twiml.VoiceResponse;
+require('dotenv').config();
 
-const client = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-const prismaClient = new prisma.PrismaClient();
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
-// Function to send a call reminder and store the call in the database
-const sendCall = async (userId, customerName, phoneNumber, paymentAmount, dueDate, language) => {
-  try {
-    // Create a dynamic message based on the provided fields
-    const message = `Hello ${customerName}, this is a reminder that you have a payment of $${paymentAmount} due on ${new Date(dueDate).toLocaleDateString()}. Please make sure to pay on time.`;
-
-    // Construct the TwiML response
-    const twiml = `<Response>
-                    <Say voice="alice" language="${language}">
-                      ${message}
-                    </Say>
-                  </Response>`;
-
-    // Make the call using Twilio
-    const call = await client.calls.create({
-      to: phoneNumber,
-      from: TWILIO_PHONE_NUMBER,
-      twiml: twiml,
-    });
-
-    // Save call details to the database
-    const savedCall = await prismaClient.call.create({
-      data: {
-        customerName,
-        phoneNumber,
-        paymentAmount,
-        dueDate: new Date(dueDate),
-        language,
-        status: 'pending',  
-        userId: userId,
-      },
-    });
-
-    return { callSid: call.sid, savedCall }; // Return call SID and saved call details from DB
-  } catch (error) {
-    console.error("Error sending call:", error);
-    throw error;
+class TwilioService {
+  constructor() {
+    this.client = client;
   }
-};
 
-module.exports = { sendCall };
+  generateTwiML(customerName, paymentAmount, dueDate, language) {
+    const twiml = new VoiceResponse();
+    const formattedAmount = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(paymentAmount);
+
+    const formattedDate = new Date(dueDate).toLocaleDateString(
+      language === 'french' ? 'fr-FR' : 'en-US',
+      { month: 'long', day: 'numeric', year: 'numeric' }
+    );
+
+    // Set voice and message based on language
+    const voiceConfig = {
+      voice: language === 'french' ? 'Polly.Celine' : 'Polly.Joanna',
+      language: language === 'french' ? 'fr-FR' : 'en-US'
+    };
+
+    const message = language === 'french'
+      ? `Bonjour ${customerName}, ceci est un rappel de paiement. Vous avez un paiement de ${formattedAmount} dû le ${formattedDate}. Veuillez effectuer le paiement avant la date d'échéance. Merci.`
+      : `Hello ${customerName}, this is a payment reminder. You have a payment of ${formattedAmount} due on ${formattedDate}. Please ensure to make the payment before the due date. Thank you.`;
+
+    twiml.say(voiceConfig, message);
+    twiml.pause({ length: 2 });
+    
+    // Repeat important information
+    const repeatMessage = language === 'french'
+      ? `Je répète: Vous avez un paiement de ${formattedAmount} dû le ${formattedDate}. Merci.`
+      : `I repeat: You have a payment of ${formattedAmount} due on ${formattedDate}. Thank you.`;
+    
+    twiml.say(voiceConfig, repeatMessage);
+
+    return twiml.toString();
+  }
+
+  async sendCall(customerName, phoneNumber, paymentAmount, dueDate, language) {
+    try {
+      const twimlResponse = this.generateTwiML(customerName, paymentAmount, dueDate, language);
+      
+      const call = await this.client.calls.create({
+        twiml: twimlResponse,
+        to: phoneNumber,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        statusCallback: `${process.env.BASE_URL}/api/call/status`,
+        statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
+        statusCallbackMethod: 'POST'
+      });
+
+      return call.sid;
+    } catch (error) {
+      console.error('Twilio call error:', error);
+      throw new Error(`Failed to initiate Twilio call: ${error.message}`);
+    }
+  }
+
+  async getCallDetails(callSid) {
+    try {
+      return await this.client.calls(callSid).fetch();
+    } catch (error) {
+      console.error('Error fetching call details:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = new TwilioService();

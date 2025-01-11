@@ -17,7 +17,9 @@ CREATE TABLE "Calls" (
     "dueDate" TIMESTAMP(3) NOT NULL,
     "language" TEXT NOT NULL,
     "status" TEXT NOT NULL,
+    "callSid" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Calls_pkey" PRIMARY KEY ("id")
 );

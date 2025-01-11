@@ -22,5 +22,7 @@ model Calls {
   dueDate       DateTime
   language      String
   status        String
+  callSid       String? 
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
